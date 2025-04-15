@@ -11,9 +11,22 @@ This project is a Streamlit-based dashboard that visualizes and predicts defores
 ### 📦 Installation and Running
 ```bash
 git clone https://github.com/yourusername/deforestation-dashboard.git
+```
+```bash
 cd deforestation-dashboard
+```
+```bash
 python -m venv venv
+```
+```bash
 source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+```bash
 pip install --upgrade pip
+```
+```bash
 pip install -r requirements.txt
+```
+```bash
 streamlit run main.py
+```
