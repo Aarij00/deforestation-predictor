@@ -1,5 +1,62 @@
+This file is a merged representation of a subset of the codebase, containing files not matching ignore patterns, combined into a single document by Repomix.
 
+================================================================
+File Summary
+================================================================
 
+Purpose:
+--------
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+
+File Format:
+------------
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Multiple file entries, each consisting of:
+  a. A separator line (================)
+  b. The file path (File: path/to/file)
+  c. Another separator line
+  d. The full contents of the file
+  e. A blank line
+
+Usage Guidelines:
+-----------------
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+
+Notes:
+------
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching these patterns are excluded: *.csv
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+
+Additional Info:
+----------------
+
+================================================================
+Directory Structure
+================================================================
+main.py
+README.md
+requirements.txt
+
+================================================================
+Files
+================================================================
+
+================
+File: main.py
+================
 from matplotlib.patches import FancyBboxPatch
 from pathlib import Path
 from typing import List
@@ -164,7 +221,7 @@ def loadHistoricalData(path: Path) -> pd.DataFrame:
     
     return df
 
-loss_df = loadHistoricalData(LOSS_PATH)
+# loss_df = loadHistoricalData(LOSS_PATH)
 
 @st.cache_data
 def loadLSTMPredictions(path: Path) -> pd.DataFrame:
@@ -377,20 +434,6 @@ elif section == "Historical Trends":
     st.header("Historical Trends")
     st.subheader("🗺️ Select an Area")
 
-    st.markdown(
-        """
-        <div style='font-size: 1.05rem; color: #dddddd; line-height: 1.6; padding-bottom: 1rem;'>
-            Use the map below to draw a custom region of interest anywhere in Alberta. 
-            Once a polygon is drawn, the dashboard will display annual deforestation trends within that area 
-            from <strong>2001 to 2023</strong>, based on the <em>Global Forest Change v1.10</em> dataset by Hansen et al.
-            <br><br>
-            Each data point represents an area of approximately <strong>30×30 meters</strong> of forest cover loss 
-            detected via satellite imagery. This interactive tool helps identify deforestation hotspots 
-            and temporal patterns over two decades.
-        </div>
-        """, unsafe_allow_html=True
-    )
-
     draw_polygon_map()
     if "polygon" in st.session_state:
         with st.spinner("Processing selected area..."):
@@ -400,16 +443,6 @@ elif section == "Historical Trends":
             st.caption("Each pixel represents ~30×30m of tree cover loss as mapped by satellite imagery.")
     else:
         st.info("Draw a polygon above to begin.")
-
-    st.divider()
-    
-    st.markdown(
-        """
-        <h4 style='text-align: center; color: #bbbbbb;'>
-            More visualisations coming soon...
-        </h4>
-        """
-    , unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------------
 # Models – with sub‑tabs
@@ -421,18 +454,6 @@ elif section == "Models":
     # --------------------------- Classifier tab -----------------------------
     with tabs[0]:
         st.subheader("Classifier")
-
-        st.markdown("""
-        <div style='font-size: 1.05rem; color: #dddddd; line-height: 1.6; padding-bottom: 1rem;'>
-            This model assigns a <strong>deforestation risk score</strong> to locations in Alberta based on satellite imagery. 
-            Each point is evaluated using spatial features, and categorized as <em>low</em>, <em>medium</em>, or <em>high</em> risk.
-            <br><br>
-            Use the toggle below to filter and visualize only the risk levels you're most interested in. 
-            The colors correspond to the severity of risk: <strong style='color: darkred;'>dark red</strong> (high), 
-            <strong style='color: orangered;'>orange-red</strong> (medium), and <strong style='color: orange;'>orange</strong> (low).
-        </div>
-        """, unsafe_allow_html=True)
-
 
         LOW, MED, HIGH = 0.04, 0.19, 0.29
 
@@ -558,20 +579,9 @@ elif section == "Models":
     with tabs[1]:
         st.subheader("LSTM")
         st.markdown("""
-        <div style='font-size: 1.05rem; color: #dddddd; line-height: 1.6; padding-bottom: 1rem;'>
-            This model uses a <span style='color: #1f5c1a;'>Long Short-Term Memory (LSTM)</span> neural network to forecast 
-            <em>future deforestation risk</em> across Alberta. It learns from historical satellite data and 
-            predicts likely forest loss zones for each year between <strong>2024 and 2030</strong>.
-            <br><br>
-            Select a year below to view predicted high-risk areas as a heatmap. These forecasts are probabilistic 
-            and should be interpreted as early-warning indicators, not guarantees.
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.warning("Note: Since we lack actual satellite data for future years, the model was trained using \
-                simulated or projected input features. As a result, predictions beyond 2023 are indicative \
-                and may not reflect future outcomes precisely.")
-
+        This heatmap shows predicted deforestation hotspots for each year
+        based on a temporal deep learning model (LSTM). Use the selector below to explore annual forecasts.
+        """)
         with st.spinner("Processing selected area..."):
             selected_year = st.radio("Select year:", years, horizontal=True)
             df_year = lstm_df[(lstm_df["year"] == selected_year) & (lstm_df["predicted_loss"] == 1)]
@@ -671,82 +681,11 @@ elif section == "Models":
 # ----------------------------------------------------------------------------
 elif section == "Insights":
     st.header("Key Insights")
-    st.subheader("🧠 Understanding What Drives Deforestation")
-
-    st.markdown("""
-    <div style='font-size: 1.05rem; color: #dddddd; line-height: 1.6; padding-bottom: 1rem;'>
-        Below is a breakdown of the top predictive features used by our <strong>XGBoost classifier</strong> model.
-        These features were extracted from satellite-derived land cover and geospatial layers.
-        Understanding their importance provides insight into the factors most strongly associated with
-        deforestation risk across Alberta.
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("<div style='margin-top: 50px;'></div>", unsafe_allow_html=True)
+    st.markdown("The following visual summarizes key patterns in deforestation risk identified during the project.")
 
 
     st.image("feature-imp.png", caption="Figure: Summary of regional deforestation patterns (2024–2030).", use_container_width=True)
 
-    st.markdown("<div style='margin-top: 50px;'></div>", unsafe_allow_html=True)
-
-    st.markdown("""
-    ### 🔍 Feature Glossary (Top Predictors Explained)
-
-    **🌾 `dw_shrub_and_scrub`**  
-    Percentage of land covered by shrubs and scrub. High values often signal transitional ecosystems prone to degradation.
-
-    **🌳 `dw_trees`**  
-    Proportion of tree cover in an area. Dense forest zones are closely monitored for logging and clearing risk.
-
-    **📈 `gain`**  
-    Areas where vegetation has regrown or increased. Gain can be misleading in zones with recurring disturbance.
-
-    **🌿 `dw_grass`**  
-    Extent of grasslands. These may expand when forests are cleared, especially for pasture or fire-prone areas.
-
-    **🏙️ `dw_built`**  
-    Urban and built-up land. Construction and development near forests often drive tree loss.
-
-    **🌾 `dw_crops`**  
-    Agricultural coverage. A major factor behind deforestation due to farmland expansion.
-
-    **🛰️ `B8`**  
-    Sentinel-2 Band 8 (near-infrared). Used to detect vegetation density and structural changes in canopy.
-
-    **⛰️ `elevation`**  
-    Height above sea level. Lower elevations are more prone to development and deforestation.
-
-    **📐 `slope`**  
-    Terrain steepness. Flatter areas are more accessible and often more deforested.
-
-    **💧 `dw_water`**  
-    Presence of water bodies. Lakes and rivers can attract agriculture and human settlement nearby.
-
-    **🌄 `slope_stddev_5x5`**  
-    Ruggedness over a 5x5 pixel window. Captures terrain variability that affects land use feasibility.
-
-    **💦 `NDWI`**  
-    Normalized Difference Water Index. Detects water content in vegetation or nearby bodies.
-
-    **🌱 `NDVI`**  
-    Normalized Difference Vegetation Index. A common vegetation health indicator — low NDVI may signal deforestation.
-
-    **❄️ `dw_snow_and_ice`**  
-    Snow and ice coverage. Typically associated with protected, less-disturbed regions.
-
-    **🧱 `slope_stddev_3x3`**  
-    Local slope variability at a finer scale. Helps identify minor terrain shifts that may influence land use.
-    """)
-
-    st.divider()
-    
-    st.markdown(
-        """
-        <h4 style='text-align: center; color: #bbbbbb;'>
-            More visualisations coming soon...
-        </h4>
-        """
-    , unsafe_allow_html=True)
 
 
 # ----------------------------------------------------------------------------
@@ -788,3 +727,68 @@ else:  # About
     </p>
     </div>
     """, unsafe_allow_html=True)
+
+================
+File: README.md
+================
+# deforestation-predictor
+
+================
+File: requirements.txt
+================
+altair==5.5.0
+attrs==25.3.0
+blinker==1.9.0
+branca==0.8.1
+cachetools==5.5.2
+certifi==2025.1.31
+charset-normalizer==3.4.1
+click==8.1.8
+contourpy==1.3.1
+cycler==0.12.1
+folium==0.19.5
+fonttools==4.57.0
+gitdb==4.0.12
+GitPython==3.1.44
+idna==3.10
+Jinja2==3.1.6
+jsonschema==4.23.0
+jsonschema-specifications==2024.10.1
+kiwisolver==1.4.8
+MarkupSafe==3.0.2
+matplotlib==3.10.1
+narwhals==1.34.1
+numpy==2.2.4
+packaging==24.2
+pandas==2.2.3
+pillow==11.1.0
+protobuf==5.29.4
+pyarrow==19.0.1
+pydeck==0.9.1
+pyparsing==3.2.3
+python-dateutil==2.9.0.post0
+pytz==2025.2
+referencing==0.36.2
+requests==2.32.3
+rpds-py==0.24.0
+scipy==1.15.2
+seaborn==0.13.2
+shapely==2.1.0
+six==1.17.0
+smmap==5.0.2
+streamlit==1.44.1
+streamlit-extras
+streamlit_folium==0.24.0
+tenacity==9.1.2
+toml==0.10.2
+tornado==6.4.2
+typing_extensions==4.13.2
+tzdata==2025.2
+urllib3==2.4.0
+xyzservices==2025.1.0
+
+
+
+================================================================
+End of Codebase
+================================================================
