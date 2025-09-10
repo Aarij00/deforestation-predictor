@@ -37,6 +37,25 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+st.markdown("""
+    <style>
+    /* Light mode */
+    @media (prefers-color-scheme: light) {
+        .main, .stMarkdown, .stText, .css-1d391kg {
+            color: black !important;
+        }
+    }
+
+    /* Dark mode */
+    @media (prefers-color-scheme: dark) {
+        .main, .stMarkdown, .stText, .css-1d391kg {
+            color: white !important;
+        }
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # ----------------------------------------------------------------------------
 # Helpers
 # ----------------------------------------------------------------------------
